@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Service extends Model
 {
     protected $fillable = [
-        'name','description','duration_minutes','price',
-        'requires_deposit','deposit_amount','active','category_id',
+    'name','description','duration_minutes','price',
+    'requires_deposit','deposit_amount','active','category_id','img'
     ];
+
 
     public $timestamps = false;
 

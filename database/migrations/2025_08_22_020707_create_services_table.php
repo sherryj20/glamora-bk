@@ -20,6 +20,8 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->boolean('requires_deposit')->default(false);
             $table->decimal('deposit_amount', 10, 2)->nullable();
+            $table->text('img')->nullable();
+
             $table->boolean('active')->default(true);
 
             $table->uuid('category_id')->nullable()->index();
