@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
@@ -39,7 +41,21 @@ Route::middleware('auth:sanctum')->group(function () {
     
     /**  */
     Route::get('users/names', [UserController::class, 'names'])->name('users.names');
+    Route::get('users/info', [UserController::class, 'info'])->name('users.info');
     
+
+    Route::get('/appointments', [AppointmentController::class, 'index']);
+
+    // Solo citas del usuario logeado
+    Route::get('appointments/mine', [AppointmentController::class, 'mine']);
+    Route::get('appointments/mine/upcoming', [AppointmentController::class, 'myUpcoming']);
+    Route::get('appointments/mine/pending', [AppointmentController::class, 'myPending']);
+
+    // Acciones sobre una cita (aceptar/declinar/cancelar/reagendar)
+    Route::post('appointments/{appointment}/accept',  [AppointmentController::class, 'accept']);
+    Route::post('appointments/{appointment}/decline', [AppointmentController::class, 'decline']);
+    Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel']);
+    Route::patch('appointments/{appointment}/rebook', [AppointmentController::class, 'rebook']);
 });
 Route::middleware('auth:sanctum')->get('users', [UserController::class, 'index'])
 ->name('users.index');
@@ -62,3 +78,9 @@ Route::get('stylists/{id}',          [StylistController::class, 'show'])->name('
 Route::post('stylists',              [StylistController::class, 'store'])->name('stylists.store');       // crear
 Route::post('stylists/{id}',         [StylistController::class, 'update'])->name('stylists.update');     // actualizar
 Route::post('stylists/{id}/active',  [StylistController::class, 'setActive'])->name('stylists.active');  // activar/inactivar
+
+
+
+/**/
+Route::post('/bookings', [BookingController::class, 'store']);
+Route::post('/bookings/{booking}/items', [BookingController::class, 'storeItem']); // opcional

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BookingItem extends Model
 {
     protected $fillable = [
-        'booking_id','service_id','quantity','unit_price',
+        'booking_id','service_id','quantity','unit_price'
     ];
 
     public $timestamps = false;

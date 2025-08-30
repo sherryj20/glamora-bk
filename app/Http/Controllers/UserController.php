@@ -40,11 +40,22 @@ class UserController extends Controller
         return response()->json($q->paginate($perPage));
     }
 
-        public function names()
+        
+    public function names()
     {
         return User::query()
             ->select(['id', 'name'])
             ->orderBy('name')
+            ->get();
+    }
+
+        
+    public function info()
+    {
+        return User::query()
+            ->select(['id', 'name', 'phone', 'email'])
+            ->orderBy('name')
+            ->where('role', 0)
             ->get();
     }
     

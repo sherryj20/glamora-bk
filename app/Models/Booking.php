@@ -22,7 +22,7 @@ class Booking extends Model
 
     protected $casts = [
         'service_date' => 'date',
-        'service_time' => 'datetime:H:i:s',
+        'service_time' => 'string',          // ✅ deja la hora como texto
         'subtotal'     => 'decimal:2',
         'tax'          => 'decimal:2',
         'total_price'  => 'decimal:2',
@@ -44,4 +44,6 @@ class Booking extends Model
     {
         return $this->hasMany(BookingItem::class);
     }
+
+    
 }

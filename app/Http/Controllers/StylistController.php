@@ -135,7 +135,6 @@ class StylistController extends Controller
             if ($request->has('bio'))       $data['bio']       = $request->input('bio');
             if ($request->has('active'))    $data['active']    = $request->boolean('active');
             if ($imgUrl)                    $data['img']       = $imgUrl;
-            if (!empty($data))              $data['updated_at']= now();
 
             // Actualizamos el stylist
             if (!empty($data)) {
@@ -150,7 +149,6 @@ class StylistController extends Controller
                     // 1) Nuevo usuario => role = 2
                     DB::table('users')->where('id', $newUserId)->update([
                         'role'       => 2,
-                        'updated_at' => now(),
                     ]);
 
                     // 2) Usuario viejo => si ya no tiene ningún stylist asignado, role = 0
@@ -160,8 +158,7 @@ class StylistController extends Controller
 
                     if (!$stillUsed) {
                         DB::table('users')->where('id', $prevUserId)->update([
-                            'role'       => 0,
-                            'updated_at' => now(),
+                            'role'       => 0
                         ]);
                     }
                 }
@@ -181,12 +178,27 @@ class StylistController extends Controller
     public function setActive(Request $request, int $id)
     {
         $request->validate(['active' => 'required|boolean']);
+        $active = $request->boolean('active');
 
-        $affected = DB::table('stylists')->where('id', $id)->update([
-            'active'     => $request->boolean('active'),
-            'updated_at' => now(),
+        // Obtener el user_id actual de la estilista
+        $stylist = DB::table('stylists')
+            ->where('id', $id)
+            ->select('id', 'user_id', 'active')
+            ->first();
+
+        if (!$stylist) return response()->json(null, 404);
+
+        // Actualizar estado activo/inactivo
+        DB::table('stylists')->where('id', $id)->update([
+            'active' => $active,
         ]);
-        if (!$affected) return response()->json(null, 404);
+
+        // ➜ Ajustar rol del usuario asociado
+        if ($stylist->user_id) {
+            DB::table('users')->where('id', $stylist->user_id)->update([
+                'role' => $active ? 2 : 0,   // activo => 2 (stylist), inactivo => 0 (cliente)
+            ]);
+        }
 
         $row = DB::table('stylists as s')
             ->leftJoin('users as u', 'u.id', '=', 's.user_id')
@@ -196,4 +208,5 @@ class StylistController extends Controller
 
         return response()->json($row);
     }
+
 }
