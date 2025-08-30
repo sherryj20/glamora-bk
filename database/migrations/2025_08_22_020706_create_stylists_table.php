@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('stylists', function (Blueprint $table) {
             $table->id();            
-            $table->string('name');
             $table->string('specialty')->nullable();
+            $table->text('img')->nullable();
+            $table->text('bio')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->boolean('active')->default(true);
             $table->timestamp('created_at')->useCurrent();
         });

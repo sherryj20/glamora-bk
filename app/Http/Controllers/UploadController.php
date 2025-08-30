@@ -18,10 +18,8 @@ class UploadController extends Controller
         $ext  = $file->getClientOriginalExtension() ?: $file->extension();
         $dest = 'uploads/' . date('Y/m/d') . '/' . Str::uuid() . ($ext ? ".{$ext}" : '');
 
-        // true => agrega metadato firebaseStorageDownloadTokens
         $res = $gcs->upload($file, $dest, true);
 
-        // Opción A (recomendada para compartir sin caducidad): URL Firebase con token
         $publicUrl = $gcs->firebaseDownloadUrl($res['name'], $res['firebase_token']);
 
         // Opción B (temporal): URL firmada (ej. válida 60 min)
